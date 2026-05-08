@@ -1,0 +1,23 @@
+services:
+  # Serwis schowany w izolowanej sieci wewnętrznej Dockera (brak mappingu portów na zewnątrz)
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "5001:5001"
+    env_file:
+      - .env
+    restart: unless-stopped
+#      yaml
+#    ports:
+#      - "5001:5001"
+
+  # Główna aplikacja wystawiona na zewnątrz
+  main-service:
+    build: ./main-service
+    ports:
+      - "8000:8000" # Port publiczny dla komunikacji klient -> API
+    env_file:
+      - .env
+    depends_on:
+      - auth-service
+    restart: unless-stopped
